@@ -272,6 +272,7 @@ class SelectedArray{
     private:
         Vertex *arr;
         bool *check;
+        int result_count;
 
         Vertex getCs(Vertex query_node){
             return arr[query_node];
