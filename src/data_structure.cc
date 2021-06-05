@@ -32,6 +32,8 @@ SelectedArray::SelectedArray(size_t len_query, const Graph &data){
     for (size_t i=0;i<len;i++){
             check[i]=false;
     }
+    
+    this->result_count = 0;
 
     return;
 }
@@ -107,6 +109,57 @@ void SelectedArray::print(){
     std::cout<<"\n";
 
 
+}
+
+void SelectedArray::print_result(){
+    size_t len = sizeof(this->arr)/sizeof((this->arr)[0]);
+    if (this->result_count ==0){
+        std::cout<<"t "<<len<<"\n";
+    }
+
+    std::cout<<"a";
+
+    for (size_t i=0;i<len;i++){
+        std::cout<<" "<<arr[i];
+    }
+
+    std::cout<<"\n";
+
+    this->result_count++;
+
+    return;
+}
+
+
+void SelectedArray::print_result(const string &file_name){
+    std::ofstream file(file_name);
+    
+    if (!file.is_open()){
+        std::cout << "Result file "<< file_name << " not found.\n";
+        exit(EXIT_FAILURE);
+    }
+
+    size_t len = sizeof(this->arr)/sizeof((this->arr)[0]);
+    
+    if (this->result_count ==0){
+        std::cout<<"t "<<len<<"\n";
+        file<<"t "<<len<<"\n";
+    }
+
+    std::cout<<"a";
+    file<<"a";
+
+    for (size_t i=0;i<len;i++){
+        std::cout<<" "<<arr[i];
+        file<<" "<<arr[i];
+    }
+
+    std::cout<<"\n";
+    file<<"\n";
+
+    this->result_count++;
+
+    return;
 }
 
 void AvoidVectorElement::print(){
