@@ -263,6 +263,10 @@ class SelectedArray{
             }
             return true;
         }
+    
+        Vertex getSelectedOf(Vertex query_node) {
+            return arr[query_node];
+        }
 
         void print_result();
         void print_result(const string &file_name);
