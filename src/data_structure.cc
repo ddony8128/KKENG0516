@@ -32,11 +32,12 @@ SelectedArray::SelectedArray(size_t len_query, const Graph &data){
     for (size_t i=0;i<len;i++){
             check[i]=false;
     }
-    
+
     this->result_count = 0;
 
     return;
 }
+
 
 
 void SearchStackElement::print(){
@@ -111,6 +112,7 @@ void SelectedArray::print(){
 
 }
 
+
 void SelectedArray::print_result(){
     size_t len = sizeof(this->arr)/sizeof((this->arr)[0]);
     if (this->result_count ==0){
@@ -161,6 +163,8 @@ void SelectedArray::print_result(const string &file_name){
 
     return;
 }
+
+
 
 void AvoidVectorElement::print(){
     std::cout<<"<Avoid Vector Element>\n";
