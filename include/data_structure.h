@@ -263,7 +263,7 @@ class SelectedArray{
             }
             return true;
         }
-    
+
         Vertex getSelectedOf(Vertex query_node) {
             return arr[query_node];
         }
@@ -352,17 +352,6 @@ class AvoidVector{
             return;
         }
 
-        bool isAvoided(Vertex cs){
-            int len = av.size();
-            for(int i=0; i<len;i++){
-                AvoidVectorElement tempE = av[i];
-                if(tempE.getCS()==cs){
-                    return true;
-                }
-            }
-            return false; 
-        }
-    
         bool isYield(Vertex v){
             int len = av.size();
             for(int i=0; i<len;i++){
@@ -374,6 +363,16 @@ class AvoidVector{
             return -1;
         }
 
+        bool isAvoided(Vertex cs){
+            int len = av.size();
+            for(int i=0; i<len;i++){
+                AvoidVectorElement tempE = av[i];
+                if(tempE.getCS()==cs){
+                    return true;
+                }
+            }
+            return false; 
+        }
 
         Vertex isDesperate(Vertex v){
             int len = av.size();
