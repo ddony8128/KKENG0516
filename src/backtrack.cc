@@ -11,6 +11,7 @@
 #include <queue>
 #include <stack>
 
+
 #define MAXINT 100000000
 
 using namespace std;
@@ -24,6 +25,8 @@ size_t activated_count;
 SelectedArray *selected_arr;
 AvoidVector *avoid_vector;
 bool finish_flag;
+vector<vector<Vertex>> DAG;
+vector<vector<Vertex>> RDAG;
 
 Backtrack::Backtrack() {}
 Backtrack::~Backtrack() {}
@@ -45,8 +48,7 @@ void Backtrack::PrintAllMatches(const Graph &data, const Graph &query,
   Vertex root;
   root = RootForDAG(query, cs);
 
-  vector<vector<Vertex>> DAG;
-  vector<vector<Vertex>> RDAG;
+
   DAG.resize(query.GetNumVertices());
   RDAG.resize(query.GetNumVertices());
   BuildDAG(query, cs, root, DAG);
@@ -69,12 +71,13 @@ void Backtrack::PrintAllMatches(const Graph &data, const Graph &query,
     Vertex temp_smallest_extendable;
     vector<Vertex>* temp_smallest_cs;
     int temp_smallest_cs_num = MAXINT;
+    vector<Vertex> *temp_cs = new vector<Vertex>();
     
     vector<Vertex> extendable_vertex;
     for (int k = 0; k < len_query; k++) {
       if( ( !activated_bit_arr->isActivated(k) ) && boundary_count_arr->getBoundaryCount(k) == incoming_number_arr->getIncomingNumber(k)) {
 
-        vector<Vertex> *temp_cs = new vector<Vertex>();
+        
         vector<Vertex> illuminated_cs;
 
         for (int i = 0; i < cs.GetCandidateSize(k); i++) {
@@ -133,12 +136,12 @@ void Backtrack::PrintAllMatches(const Graph &data, const Graph &query,
       }
     }
 
-    temp_smallest_cs->sort(temp_smallest_cs->begin(), temp_smallest_cs->end());
+    sort(temp_smallest_cs->begin(), temp_smallest_cs->end());
     vector<Vertex> next_cs;
     next_cs.assign(temp_cs->begin()+1, temp_cs->end());
     search_stack->push(SearchStackElement(temp_smallest_extendable, (*temp_smallest_cs)[0], next_cs));
     activated_bit_arr->activate(temp_smallest_extendable);
-    boundary_count_arr->activate(temp_smallest_extendable);
+    boundary_count_arr->activate(DAG, temp_smallest_extendable);
     selected_arr->select(temp_smallest_extendable, (*temp_smallest_cs)[0]);
 
   }
@@ -175,7 +178,7 @@ void Backtrack::BuildDAG(const Graph &query, const CandidateSet &cs, Vertex root
 
     for ( int i = query.GetNeighborStartOffset(x); i <= query.GetNeighborEndOffset(x); i++ ) {
       int y = query.GetNeighbor(i);
-      if (!visit) {
+      if (!visit[y]) {
         q.push(y);
         visit[y] = true;
         incoming_number_arr->count(y);
@@ -190,7 +193,7 @@ void Backtrack::BuildDAG(const Graph &query, const CandidateSet &cs, Vertex root
 void Backtrack::BuildReverseDAG(vector<vector<Vertex>> &DAG, vector<vector<Vertex>> &RDAG){
   for (int i = 0; i<DAG.size();i++){
     for (int j = 0; j<DAG[i].size();j++){
-      Vertex child = DAG[i][j];
+      // Vertex child = DAG[i][j];
       RDAG[j].emplace_back(i);
     }
   }
@@ -234,7 +237,8 @@ bool Backtrack::backtrack_1(const Graph &data, const Graph &query,
     while (!temp.isEmptyNextCS()) {
         Vertex temp_next = temp.popNextCS();
         if (!avoid_vector->isAvoided(temp_next)) {
-          search_stack->push(temp.setSelectedCS(temp_next));
+          temp.setSelectedCS(temp_next);
+          search_stack->push(temp);
           return false;
         } 
       }
@@ -278,10 +282,10 @@ bool Backtrack::backtrack_2(const Graph &data, const Graph &query,
     }
 
 
-    if (is_in_illuminated_cs || query.isNeighbor(temp.getQueryNode(), k)){
+    if (is_in_illuminated || query.IsNeighbor(temp.getQueryNode(), k)){
       con = false;
     } else{
-      inactivate(temp.getQueryNode);
+      inactivate(temp.getQueryNode());
     } 
       
   } 
@@ -292,12 +296,13 @@ bool Backtrack::backtrack_2(const Graph &data, const Graph &query,
      while (!temp.isEmptyNextCS()) {
       Vertex temp_next = temp.popNextCS();
       if (!avoid_vector->isAvoided(temp_next)) {
-        search_stack->push(temp.setSelectedCS(temp_next));
+        temp.setSelectedCS(temp_next);
+        search_stack->push(temp);
         return false;
       } 
     }
       
-    inactivate(temp.getQueryNode);
+    inactivate(temp.getQueryNode());
 
     if (search_stack->isEmpty()) {
       return true;
@@ -326,11 +331,12 @@ bool Backtrack::backtrack_3(){
     while (!temp.isEmptyNextCS()) {
       Vertex temp_next = temp.popNextCS();
       if (!avoid_vector->isAvoided(temp_next)) {
-        search_stack->push(temp.setSelectedCS(temp_next));
+        temp.setSelectedCS(temp_next);
+        search_stack->push(temp);
         return false;
       } 
     }
-    inactivate(temp.getQueryNode);
+    inactivate(temp.getQueryNode());
 
   }  
   return false;
@@ -341,8 +347,6 @@ bool Backtrack::backtrack_3(){
 void Backtrack::inactivate(Vertex denied){
   avoid_vector->remove(denied);
   activated_bit_arr->inactivate(denied);
-  boundary_count_arr->inactivate(denied);
+  boundary_count_arr->inactivate(DAG, denied);
   selected_arr->unselect(denied);
 }
-
-
