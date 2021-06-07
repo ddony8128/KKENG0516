@@ -362,6 +362,18 @@ class AvoidVector{
             }
             return false; 
         }
+    
+        bool isYield(Vertex v){
+            int len = av.size();
+            for(int i=0; i<len;i++){
+                AvoidVectorElement tempE = av[i];
+                if(tempE.getYield()==v){
+                    return tempE.getCS();
+                }
+            }
+            return -1;
+        }
+
 
         Vertex isDesperate(Vertex v){
             int len = av.size();
