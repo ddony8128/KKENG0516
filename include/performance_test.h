@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <time.h>
+#include <vector>
 #include "common.h"
 #include "graph.h"
 #include "candidate_set.h"
@@ -40,7 +41,7 @@ class PerformanceTest{
     
 
         bool check(const Graph &data, const Graph &query,
-                                const CandidateSet &cs, int *answer, size_t len_query);
+                                const CandidateSet &cs, const std::vector<Vertex> &answer, size_t len_query);
 };
 
 
