@@ -88,6 +88,7 @@ class SearchStack{
             stack.clear();
             return;
         }
+        
 
         void push(SearchStackElement newE){
             stack.emplace_back(newE);
@@ -119,6 +120,7 @@ class ActivatedBitArray{
 
         ActivatedBitArray(size_t len_query){
             arr = new bool[len_query];
+            this->len_query = len_query;
             for(size_t i = 0;i<len_query;i++){
                 arr[i] = false;
             }
@@ -149,6 +151,7 @@ class ActivatedBitArray{
     private:
 
         bool *arr;
+        size_t len_query;
 
 };
 
@@ -158,6 +161,7 @@ class BoundaryCountArray{
     public:
         BoundaryCountArray(size_t len_query){
             arr = new size_t[len_query];
+            this-> len_query = len_query;
             for (size_t i = 0; i<len_query ; i++){
                 arr[i] = 0;
             }
@@ -181,6 +185,7 @@ class BoundaryCountArray{
     private:
 
         size_t *arr;
+        size_t len_query;
 
         void count(Vertex v){
             arr[v]++;
@@ -198,6 +203,7 @@ class IncomingNumberArray{
     public:
         IncomingNumberArray(size_t len_query){
             arr = new size_t[len_query];
+            this-> len_query;
             for (size_t i=0;i<len_query;i++){
                 arr[i]=0;
             }
@@ -222,6 +228,7 @@ class IncomingNumberArray{
 
     private:
         size_t *arr;
+        size_t len_query;
 
 };
 
@@ -234,6 +241,7 @@ class SelectedArray{
         ~SelectedArray(){
             delete[] arr;
             delete[] check;
+            file->close();
         }
 
         void select(Vertex query_node, Vertex cs){
@@ -277,6 +285,9 @@ class SelectedArray{
         Vertex *arr;
         bool *check;
         int result_count;
+        size_t len_query;
+        std::ofstream* file;
+
 
         Vertex getCs(Vertex query_node){
             return arr[query_node];
@@ -390,7 +401,7 @@ class AvoidVector{
             for(int i=len-1; i>=0;i--){
                 AvoidVectorElement tempE = av[i];
                 if(tempE.getYield()==yield){
-                    av.erase(av.begin()+i-1);
+                    av.erase(av.begin()+i);
                 }
             }
             return;
