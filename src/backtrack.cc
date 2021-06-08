@@ -454,6 +454,6 @@ void Backtrack::inactivate(Vertex denied){
   activated_bit_arr->inactivate(denied);
   boundary_count_arr->inactivate(DAG, denied);
   selected_arr->unselect(denied);
-  activated_count—;
+  activated_count--;
 
 }
