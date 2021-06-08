@@ -22,7 +22,11 @@ void BoundaryCountArray::inactivate(const std::vector<std::vector<Vertex>> &DAG,
 }
 
 SelectedArray::SelectedArray(size_t len_query, const Graph &data){
+    
     this->arr = new Vertex[len_query];
+
+    this->len_query = len_query;
+
     for (size_t i=0;i<len_query;i++){
         arr[i]=-1;
     }
@@ -65,7 +69,7 @@ void SearchStack::print(){
 void ActivatedBitArray::print(){
     
     std::cout<<"<Activated> ";
-    size_t len = sizeof(this->arr)/sizeof(this->arr[0]);
+    size_t len = this->len_query;
     for(size_t i=0;i<len;i++){
         if(this->isActivated(i)){
             std::cout<<i<<", ";
@@ -79,7 +83,7 @@ void BoundaryCountArray::print(){
 
     std::cout<<"<Boundary Count>\n";
 
-    size_t len = sizeof(this->arr)/sizeof(this->arr[0]);
+    size_t len = this->len_query;
     for(size_t i=0;i<len;i++){
 
         std::cout<<i<<": "<<this->getBoundaryCount((Vertex) i)<<", ";
@@ -91,7 +95,7 @@ void BoundaryCountArray::print(){
 void IncomingNumberArray::print(){
     std::cout<<"<Incoming Number>\n";
 
-    size_t len = sizeof(this->arr)/sizeof(this->arr[0]);
+    size_t len = this->len_query;
     for(size_t i=0;i<len;i++){
         std::cout<<i<<": "<<this->getIncomingNumber((Vertex) i)<<", ";
     }
@@ -103,7 +107,7 @@ void IncomingNumberArray::print(){
 void SelectedArray::print(){
     std::cout<<"<Selected Array>\n";
 
-    size_t len = sizeof(this->arr)/sizeof(this->arr[0]);
+    int len = this->len_query;
     for(size_t i=0;i<len;i++){
         std::cout<<i<<": "<<this->getCs((Vertex) i)<<", ";
     }
@@ -114,7 +118,7 @@ void SelectedArray::print(){
 
 
 void SelectedArray::print_result(){
-    size_t len = sizeof(this->arr)/sizeof((this->arr)[0]);
+    size_t len = this->len_query;
     if (this->result_count ==0){
         std::cout<<"t "<<len<<"\n";
     }
@@ -134,33 +138,36 @@ void SelectedArray::print_result(){
 
 
 void SelectedArray::print_result(const string &file_name){
-    std::ofstream file(file_name);
     
-    if (!file.is_open()){
+    if(this->result_count ==0){
+        this->file = new std::ofstream(file_name);
+    }
+    
+    
+    if (!this->file->is_open()){
         std::cout << "Result file "<< file_name << " not found.\n";
         exit(EXIT_FAILURE);
     }
 
-    size_t len = sizeof(this->arr)/sizeof((this->arr)[0]);
-    
+    size_t len = this->len_query;
+    std::cout<<result_count<<"\n";
     if (this->result_count ==0){
         std::cout<<"t "<<len<<"\n";
-        file<<"t "<<len<<"\n";
+         (*(this->file))<<"t "<<len<<"\n";
     }
 
-    std::cout<<"a";
-    file<<"a";
+    std::cout<<"a ";
+    (*(this->file))<<this->result_count<<"a ";
 
     for (size_t i=0;i<len;i++){
         std::cout<<" "<<arr[i];
-        file<<" "<<arr[i];
+        (*(this->file))<<" "<<arr[i];
     }
 
     std::cout<<"\n";
-    file<<"\n";
+    (*(this->file))<<"\n";
 
     this->result_count++;
-
     return;
 }
 
@@ -187,7 +194,6 @@ void AvoidVector::print(){
     }
 
 }
-
 
 
 
