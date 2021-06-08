@@ -7,6 +7,7 @@
 #include "performance_test.h"
 #include "backtrack.h"
 #include "common.h"
+#include <vector>
 
 
 void PerformanceTest::check_result(const Graph &data, const Graph &query,
@@ -24,22 +25,28 @@ void PerformanceTest::check_result(const Graph &data, const Graph &query,
     char type;
     size_t len_query;
 
-    file >> type >> len_query;
+    
 
-    Vertex* temp_answer = new Vertex[len_query];
+    file >> type >> len_query;
+    
+    std::vector<Vertex> temp_answer;
+    temp_answer.resize(len_query);
 
     while(file >> type){
         if (type == 'a'){
+            temp_answer.clear();
 
             for (size_t i=0; i<len_query;i++){
                 Vertex v;
                 file >> v;
-                temp_answer[i] = v;
+                temp_answer.emplace_back(v);
             }
-
+            
             answer_num++;
             if (this->check(data, query, cs, temp_answer, len_query)){
                 correct_num++;
+            } else{
+                std::cout<<"wrong "<<answer_num;    
             }
 
         }
@@ -68,7 +75,7 @@ void PerformanceTest::print_result(){
 }
 
 bool PerformanceTest::check(const Graph &data, const Graph &query,
-                                const CandidateSet &cs, Vertex *answer, size_t len_query){
+                                const CandidateSet &cs, const std::vector<Vertex> &answer, size_t len_query){
     for(size_t k = 0;k<len_query;k++){
         bool exist = false;
         
